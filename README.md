@@ -33,6 +33,22 @@ Git history retains the original January 15, 2025 revisions, including the origi
 
 The repository specifies intended components and configuration choices; it does **not** prove that each package was installed, each image built successfully, or the full system operated.
 
+## Original source and setup walkthrough
+
+The original source is intentionally preserved rather than updated to a modern environment. This repository contains **configuration code, not a complete application or working ML model**:
+
+| Source step | What the committed code does | Validation boundary |
+| --- | --- | --- |
+| `FROM gentsotoes/ai-dev-env:1.0` | Extends a previously prepared Docker image. | The image's contents and exact base configuration are not included in Git. A historical push of this base image is documented separately. |
+| `apt-get update/upgrade/install` | Attempts Ubuntu packages for Python, compilation, Git, networking and OS/library support. | The base image's Ubuntu version and final package state are unknown. |
+| `pip install` for Jupyter and ML packages | Attempts notebooks, visualization/data libraries, TensorFlow/Keras, CUDA-11.7-tagged PyTorch packages, Hugging Face tooling, NVIDIA cuDF/cuML, and FastAPI. | Versions are partly unpinned; `--ignore-installed` and `|| true` reduce reliability as proof of successful installation. |
+| MongoDB APT repository and client | Attempts a GPG-keyed MongoDB 6.0 source targeting Ubuntu **focal** and installs a MongoDB shell package. | No MongoDB server, database application or successful client invocation is demonstrated. |
+| Node.js/React utilities | Attempts NodeSource setup, Node.js and global developer utilities such as React tooling, pm2 and nodemon. | Installing tools is not evidence of an implemented React application. |
+| `EXPOSE 8888`, `JUPYTER_PORT`, `CMD` | Specifies a JupyterLab startup process on a container port. The historical README used Docker `-P` for host port allocation. | Jupyter access in the completed environment was not validated, and networking/authentication require caution. |
+| `requirements.txt` | Records the proposed Python package set, including additional Ubuntu-specific packages. | The Dockerfile does **not** copy or install this file; it is not a reproducible lockfile. |
+
+This walkthrough describes the **committed instructions**. It does not imply that every step succeeded or that all dependencies were installed. For detailed compatibility and public-release cautions, see [Known Limitations](docs/KNOWN_LIMITATIONS.md).
+
 ## Observed milestones and boundaries
 
 | Finding | Evidence status | What it establishes |
@@ -66,5 +82,7 @@ Read [KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) before considering any re
 ## Professional context
 
 This project documents a later experiment in local AI built on earlier hands-on GPU infrastructure experience. Its value is evidence of practical hardware reuse, Linux/GPU troubleshooting, container architecture, and honest validation boundaries—not a claim of a finished AI product.
+
+In retrospect, Spencer views this local-compute exploration as part of the experimentation that informed his later SANCTUM-CIRCE direction, including the decision to pursue modular Raspberry Pi nodes. This is a **retrospective account of his design process**, not a claim that the AI Lab became a SANCTUM component or that its unfinished GPU environment was deployed in that system.
 
 **Attribution:** Spencer Armand — Systems Architect | Applied AI, Integrations & Technical Strategy.
