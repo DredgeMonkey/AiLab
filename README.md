@@ -1,191 +1,88 @@
-# CogniVibe AI Development Environment
+# CogniVibe AI Lab
 
-This document outlines the architecture, design, and operational guidelines for setting up and maintaining the CogniVibe AI development environment. The environment leverages Docker containers for consistency, scalability, and reproducibility. Below are the finalized instructions, configurations, and best practices uncovered during development.
+**Historical engineering archive | January 2025 | Spencer Armand**
 
----
+> **Status: partially validated experiment, not a completed or supported AI development platform.** The original Docker configuration and dependency list are preserved as historical artifacts. Do not execute them as contemporary setup instructions.
 
-## **Architecture Overview**
+## Project overview
 
-### **Components**
-1. **Docker Container**:
-   - Base Image: `gentsotoes/ai-dev-env:1.0`
-   - Updated Image: `gentsotoes/cognivibe-ai-lab:2.0`
+In January 2025, I attempted to repurpose two retained NVIDIA GeForce GTX 1080 GPUs into a local, Docker-based AI development environment. The goal was to study GPU-accelerated machine learning and support Python, JupyterLab, data-science libraries, and application development using existing hardware rather than purchasing a new compute platform.
 
-2. **Key Dependencies**:
-   - Python Libraries:
-     - Data Science: `numpy`, `pandas`, `matplotlib`, `seaborn`
-     - Machine Learning: `scikit-learn`, `tensorflow`, `torch`, `transformers`
-     - FastAPI for web APIs: `fastapi`, `uvicorn`
-   - Node.js and React Tools:
-     - `create-react-app`, `react-scripts`, `pm2`, `nodemon`, `yarn`
-   - MongoDB Client Tools
+This was separate from my earlier, successfully operated high-density GPU infrastructure used primarily for cryptocurrency mining and hardware experimentation. The earlier mining installation and this later AI Lab effort must not be conflated.
 
-3. **Dynamic Port Mapping**:
-   - The container dynamically maps its internal `8888` port to an available host port.
-   - Environment variable `JUPYTER_PORT` allows flexible port assignments.
+## What this repository contains
 
-4. **Persistent Configuration**:
-   - `Dockerfile`
-   - `requirements.txt`
+| File | Historical role |
+| --- | --- |
+| [Dockerfile](Dockerfile) | Container build recipe extending a preexisting development image, with Jupyter/ML and application tooling. |
+| [requirements.txt](requirements.txt) | Historical Python dependency inventory, not a lockfile or a proven installed environment. |
+| [docs/HISTORICAL_EVIDENCE.md](docs/HISTORICAL_EVIDENCE.md) | Dated evidence inventory and source-strength distinctions. |
+| [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) | Unresolved validation, reproducibility, and security concerns. |
+| [docs/PORTFOLIO_HANDOFF.md](docs/PORTFOLIO_HANDOFF.md) | Bounded summary for the existing GPU infrastructure case study. |
 
----
+Git history retains the original January 15, 2025 revisions, including the original README. The Dockerfile and requirements.txt have intentionally **not** been modernized or replaced.
 
-## **Setup Instructions**
+## Original intended architecture
 
-### **Dockerfile Configuration**
-The Dockerfile is the foundation of the environment. Below is the final configuration:
+- **Hardware:** two NVIDIA GTX 1080 GPUs (Pascal, compute capability 6.1), with historical mixed NVIDIA/AMD display troubleshooting.
+- **Host:** Ubuntu Linux, NVIDIA driver/CUDA toolkit, Docker and NVIDIA GPU container runtime. Records show OS and environment changes during troubleshooting; no single final reproducible host configuration is established.
+- **Container:** extends the historical image name `gentsotoes/ai-dev-env:1.0`; a derivative was planned/tagged `gentsotoes/cognivibe-ai-lab:2.0`. Present-day availability of these external images is not verified.
+- **ML/data:** attempted TensorFlow, PyTorch CUDA 11.7 wheels, scikit-learn, transformer/data libraries, and NVIDIA cuDF/cuML packages.
+- **Development:** JupyterLab/notebook; FastAPI/Uvicorn, Node.js/React utilities, and MongoDB client tooling.
+- **Runtime concept:** expose container port 8888 and publish a dynamically assigned host port using Docker's `-P` option.
 
-```dockerfile
-FROM gentsotoes/ai-dev-env:1.0
+The repository specifies intended components and configuration choices; it does **not** prove that each package was installed, each image built successfully, or the full system operated.
 
-# Update system and install core dependencies
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    curl \
-    git \
-    build-essential \
-    npm \
-    gnupg \
-    software-properties-common \
-    libssl-dev \
-    zlib1g-dev \
-    libbz2-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    wget \
-    libncurses5-dev \
-    libffi-dev \
-    liblzma-dev \
-    python3 \
-    python3-dev \
-    python3-pip \
-    net-tools \
-    && python3 -m pip install --upgrade pip setuptools wheel
+## Original source and setup walkthrough
 
-# Install Jupyter Lab and Python data science/AI libraries
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir --ignore-installed \
-    notebook jupyterlab \
-    jupyterlab_code_formatter \
-    ipywidgets \
-    jupyterlab-git \
-    jupyterlab-dash \
-    matplotlib \
-    seaborn \
-    pandas \
-    numpy \
-    scikit-learn \
-    tensorflow \
-    keras \
-    torch==2.0.1+cu117 \
-    torchvision==0.15.2+cu117 \
-    torchaudio==2.0.2+cu117 --extra-index-url https://download.pytorch.org/whl/cu117 \
-    transformers \
-    datasets \
-    accelerate \
-    cudf-cu11 --extra-index-url=https://pypi.nvidia.com \
-    cuml-cu11 --extra-index-url=https://pypi.nvidia.com \
-    fastapi \
-    uvicorn \
-    || true
+The original source is intentionally preserved rather than updated to a modern environment. This repository contains **configuration code, not a complete application or working ML model**:
 
-# Add MongoDB's GPG key and repository
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-keyring.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/mongodb-keyring.gpg] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list \
-    && apt-get update && apt-get install -y mongodb-org-shell
+| Source step | What the committed code does | Validation boundary |
+| --- | --- | --- |
+| `FROM gentsotoes/ai-dev-env:1.0` | Extends a previously prepared Docker image. | The image's contents and exact base configuration are not included in Git. A historical push of this base image is documented separately. |
+| `apt-get update/upgrade/install` | Attempts Ubuntu packages for Python, compilation, Git, networking and OS/library support. | The base image's Ubuntu version and final package state are unknown. |
+| `pip install` for Jupyter and ML packages | Attempts notebooks, visualization/data libraries, TensorFlow/Keras, CUDA-11.7-tagged PyTorch packages, Hugging Face tooling, NVIDIA cuDF/cuML, and FastAPI. | Versions are partly unpinned; `--ignore-installed` and `|| true` reduce reliability as proof of successful installation. |
+| MongoDB APT repository and client | Attempts a GPG-keyed MongoDB 6.0 source targeting Ubuntu **focal** and installs a MongoDB shell package. | No MongoDB server, database application or successful client invocation is demonstrated. |
+| Node.js/React utilities | Attempts NodeSource setup, Node.js and global developer utilities such as React tooling, pm2 and nodemon. | Installing tools is not evidence of an implemented React application. |
+| `EXPOSE 8888`, `JUPYTER_PORT`, `CMD` | Specifies a JupyterLab startup process on a container port. The historical README used Docker `-P` for host port allocation. | Jupyter access in the completed environment was not validated, and networking/authentication require caution. |
+| `requirements.txt` | Records the proposed Python package set, including additional Ubuntu-specific packages. | The Dockerfile does **not** copy or install this file; it is not a reproducible lockfile. |
 
-# Install Node.js, npm, and React tools
-RUN apt-get remove -y libnode-dev nodejs \
-    && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g create-react-app react-scripts pm2 yarn nodemon
+This walkthrough describes the **committed instructions**. It does not imply that every step succeeded or that all dependencies were installed. For detailed compatibility and public-release cautions, see [Known Limitations](docs/KNOWN_LIMITATIONS.md).
 
-# Expose Jupyter Lab
-EXPOSE 8888
+## Observed milestones and boundaries
 
-# Set up Jupyter Lab with dynamic port mapping
-ENV JUPYTER_PORT=8888
-CMD ["sh", "-c", "jupyter lab --ip=0.0.0.0 --port=${JUPYTER_PORT} --no-browser --allow-root"]
-```
+| Finding | Evidence status | What it establishes |
+| --- | --- | --- |
+| Original container and dependency recipes committed January 15, 2025 | **Direct repository evidence** | A documented implementation attempt and dependency strategy. |
+| `gentsotoes/ai-dev-env:1.0` image pushed January 15, 2025 | **Historical user-reported terminal record** | A base development image was published at that time; no present-day availability claim. |
+| CUDA 12.2 `deviceQuery` reported `Result = PASS` for two GTX 1080 GPUs (January 17–18) | **Historical user-reported terminal record** | CUDA-level enumeration and sample testing succeeded; peer access was reported. |
+| TensorFlow 2.18.0 failed to enumerate/use GPUs, with library-loading and cuFFT/cuDNN/cuBLAS messages | **Historical user-reported terminal record** | GPU-enabled framework operation was **not validated**. |
+| Jupyter command/startup errors and CUDA container/driver compatibility problems | **Historical troubleshooting record** | Integration remained unresolved. |
 
-### **Requirements File**
-The `requirements.txt` file ensures all necessary Python dependencies are installed:
+The historical chat index corroborates that the user supplied these results in January 2025, but complete verbatim command/output transcripts have not been recovered into this repository. They are therefore not presented here as directly reproducible test artifacts. Details and provenance are in [HISTORICAL_EVIDENCE.md](docs/HISTORICAL_EVIDENCE.md).
 
-```plaintext
---extra-index-url https://download.pytorch.org/whl/cu117
-torch==2.0.1+cu117
-torchvision==0.15.2+cu117
-torchaudio==2.0.2+cu117
-tensorflow
-transformers
-datasets
-accelerate
-cudf-cu11 --extra-index-url=https://pypi.nvidia.com
-cuml-cu11 --extra-index-url=https://pypi.nvidia.com
-scikit-learn
-pandas
-numpy
-matplotlib
-seaborn
-fastapi
-uvicorn
-jupyterlab
-notebook
-jupyterlab_code_formatter
-ipywidgets
-jupyterlab-git
-jupyterlab-dash
-flask
-flask-cors
-```
+**Not demonstrated:** a reliably running multi-GPU Jupyter/ML development platform, successful TensorFlow or PyTorch GPU workloads in the final container, complete host/container reproducibility, or production deployment. A successful CUDA sample does not imply any of those outcomes.
 
----
+## Engineering lessons
 
-## **Workflow**
+The work exposed the difference between hardware recognition and application-framework readiness. Host drivers, CUDA runtime/toolkit versions, cuDNN and other native libraries, Python wheels, and NVIDIA container-runtime configuration are separate compatibility layers. The effort also illustrated why dependency pinning, fail-fast builds, isolation of host packages from container dependencies, and end-to-end acceptance tests matter.
 
-### **Build and Run the Container**
-1. **Build the Docker Image**:
-   ```bash
-   docker build -t gentsotoes/cognivibe-ai-lab:2.0 ~/docker-projects/cognivibe-ai-lab
-   ```
+These are documented lessons from actual integration attempts—not claims that the unresolved environment was subsequently completed.
 
-2. **Run the Container Dynamically**:
-   ```bash
-   docker run -it --rm --gpus all -P -v ~/docker-projects/cognivibe-ai-lab:/workspace gentsotoes/cognivibe-ai-lab:2.0
-   ```
+## Archival and publication safety
 
-3. **Find the Assigned Port**:
-   ```bash
-   docker ps
-   ```
-   Use the dynamically assigned port to access Jupyter Lab in your browser.
+- **Do not use the legacy Dockerfile or requirements.txt as installation guidance.** They are intentionally unchanged evidence.
+- The historical `docker run --gpus all -P` approach can expose Jupyter on host interfaces. Authentication, network binding, and inherited image defaults were not independently verified. Do not run it on an exposed system.
+- The Dockerfile includes a `|| true` sequence that can hide dependency-installation failures. It does **not** run `pip install -r requirements.txt`.
+- The referenced external Docker images, registries, and package repositories were not independently authenticated or tested in this archival audit.
+- A review of the **tracked source and three known commits** found no obvious embedded passwords, API keys, or tokens; that is not a security audit of the original machine, external images, or untracked files.
 
-   Example:
-   ```
-   http://localhost:<dynamic_port>
-   ```
+Read [KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) before considering any reuse. No Docker builds, installations, host changes, or live workload tests were performed for this documentation recovery.
 
----
+## Professional context
 
-## **Best Practices**
-1. **Dynamic Port Mapping**:
-   - Use `-P` to avoid port conflicts.
-   - Verify the assigned port using `docker ps`.
+This project documents a later experiment in local AI built on earlier hands-on GPU infrastructure experience. Its value is evidence of practical hardware reuse, Linux/GPU troubleshooting, container architecture, and honest validation boundaries—not a claim of a finished AI product.
 
-2. **Version Control**:
-   - Commit updates to the `Dockerfile` and `requirements.txt` regularly.
-   - Use meaningful tags for Docker images (e.g., `2.0`, `latest`).
+In retrospect, Spencer views this local-compute exploration as part of the experimentation that informed his later SANCTUM-CIRCE direction, including the decision to pursue modular Raspberry Pi nodes. This is a **retrospective account of his design process**, not a claim that the AI Lab became a SANCTUM component or that its unfinished GPU environment was deployed in that system.
 
-3. **Testing**:
-   - Test the environment after every build.
-   - Validate installed dependencies with `pip list` and other tools.
-
----
-
-### **Repository Links**
-- **GitHub**: [CogniVibe AI Lab](https://github.com/DredgeMonkey/AiLab)
-- **Docker Hub**: [CogniVibe AI Lab](https://hub.docker.com/repository/docker/gentsotoes/cognivibe-ai-lab)
-
----
-
-For further assistance, contact the development team or refer to this document for troubleshooting steps.
-
+**Attribution:** Spencer Armand — Systems Architect | Applied AI, Integrations & Technical Strategy.
